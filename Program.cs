@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace DecoratorPattern {
+﻿namespace DecoratorPattern {
 
     public class Notifier {
         public List<string> administrators;
@@ -12,16 +10,17 @@ namespace DecoratorPattern {
 
 
 
-        public virtual void Send(string message) {
-            StringBuilder sb = new StringBuilder();
+        public virtual void Send(string message)
+        {
+            string sb = "";
 
             foreach (var admin in administrators)
             {
-                sb.Append(admin);
-                sb.Append(", ");
+                sb += admin;
+                sb += ", ";
             }
 
-            Console.WriteLine(message + sb.ToString());
+            Console.WriteLine(sb.Remove(sb.Length - 2) + ".\n" );
         }
     }
 
@@ -51,7 +50,7 @@ namespace DecoratorPattern {
 
         public void SendSMS(string message)
         {
-            Console.WriteLine($"Отправка СМС-сообщения '{message}'");
+            Console.WriteLine($"Отправка СМС-сообщения '{message}' на почту(ы): ");
         }
     }
 
@@ -67,7 +66,7 @@ namespace DecoratorPattern {
 
         public void SendEmail(string message)
         {
-            Console.WriteLine($"Отправка Email-сообщения '{message}'", message); ;
+            Console.WriteLine($"Отправка Email-сообщения '{message}' на почту(ы):  "); ;
         }
     }
 
@@ -82,7 +81,7 @@ namespace DecoratorPattern {
 
         public void SendToFacebook(string message)
         {
-            Console.WriteLine($"Отправка сообщения '{message}' на почты", message);
+            Console.WriteLine($"Отправка сообщения '{message}' на Facebook на почту(ы): ");
         }
 
     }
@@ -96,12 +95,23 @@ namespace DecoratorPattern {
             {
                 "admin@example.com", "sysadmin@example.com"
             };
+            var admins2 = new List<string>()
+            {
+                "admin@example.com", "sysadmin@example.com", "dbadmin@example.com"
+            };
 
             Notifier notifier = new Notifier(admins);
+            Notifier notifier2 = new Notifier(admins2);
 
-            Notifier FacebookNotifier = new FacebookNotifier(notifier);
+            Notifier facebookNotifier = new FacebookNotifier(notifier);
+            Notifier emailNotifier = new EmailNotifier(notifier);
+            Notifier smsNotifier = new SMSNotifier(notifier2);
 
-            FacebookNotifier.Send("ExampleMessage");
+            facebookNotifier.Send("SampleMessage");
+            emailNotifier.Send("ImportantMessage");
+            smsNotifier.Send("Server down!");
+
+
         }
 
 
